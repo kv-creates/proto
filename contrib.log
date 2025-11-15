@@ -45,3 +45,4 @@ Add migration on 2025-11-12 d90065f7
 Update seed on 2025-11-12 6aa18aa4
 Update controller on 2025-11-13 84f2c23a
 Fix model on 2025-11-14 336c5500
+Fix null check on 2025-11-15 f0372ca7
