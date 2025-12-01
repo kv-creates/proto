@@ -75,3 +75,4 @@ Fix edge case on 2025-11-29 fc438b6a
 Update readme on 2025-11-29 b7ed1777
 Update schema on 2025-11-30 b846d9c4
 Add model on 2025-11-30 5f6386a1
+Improve performance on 2025-12-01 bfa14213
