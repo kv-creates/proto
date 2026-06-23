@@ -491,3 +491,4 @@ Add interface on 2026-06-21 6266fece
 Add feature on 2026-06-22 098a775c
 Cleanup on 2026-06-22 2adbb4f1
 Add model on 2026-06-22 ddb97e41
+Fix null check on 2026-06-23 54c1adc2
