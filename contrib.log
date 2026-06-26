@@ -495,3 +495,4 @@ Fix null check on 2026-06-23 54c1adc2
 Update migration on 2026-06-23 d55de93d
 Fix layout on 2026-06-24 2048a69d
 Optimize query on 2026-06-25 f626029b
+Fix model on 2026-06-26 78bc54c2
