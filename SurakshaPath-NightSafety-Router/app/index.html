@@ -1,0 +1,5 @@
+<!doctype html><html><head><meta charset="utf-8"><title>SurakshaPath</title><link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"><style>#map{height:60vh}</style></head>
+<body><h3>SurakshaPath - Night Safety Router (Mock Mumbai)</h3><div id="map"></div><p>Green=safe, Red=avoid. Backend: POST /safest</p>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>var map=L.map('map').setView([19.07,72.87],13);L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);L.polyline([[19.07,72.87],[19.08,72.88]],{color:'green',weight:6}).addTo(map).bindPopup('Safe: lighting 0.9');L.polyline([[19.07,72.87],[19.06,72.86]],{color:'red',weight:6}).addTo(map).bindPopup('Avoid: lighting 0.2');</script>
+</body></html>

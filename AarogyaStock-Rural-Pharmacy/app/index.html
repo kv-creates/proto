@@ -1,0 +1,6 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AarogyaStock PWA</title><style>body{font-family:system-ui;padding:20px;max-width:600px;margin:auto} .alert{padding:10px;margin:8px 0;border-radius:8px} .high{background:#fee} .medium{background:#ffe}</style>
+</head><body><h2>AarogyaStock - Rural PHC Inventory</h2>
+<div id="alerts">Loading...</div>
+<script>fetch('/alerts').then(r=>r.json()).then(d=>{document.getElementById('alerts').innerHTML=d.map(a=>`<div class="alert ${a.severity}">${a.type} - ${a.medicine}</div>`).join('')||'All OK'}).catch(()=>{document.getElementById('alerts').innerHTML='Run Flask backend: python -m src.api'});</script>
+</body></html>

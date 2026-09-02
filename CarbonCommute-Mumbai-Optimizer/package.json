@@ -1,0 +1,13 @@
+{
+  "name": "carbon-commute",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "node src/server.js",
+    "start": "node src/server.js",
+    "test": "node --test tests/graph.test.js",
+    "demo": "node src/demo.js"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}

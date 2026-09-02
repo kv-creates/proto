@@ -1,0 +1,10 @@
+{
+  "name": "vyapar-saathi",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "node src/server.js",
+    "start": "node src/server.js",
+    "test": "node --test tests/*.js",
+    "demo": "node src/demo.js"
+  }
+}
