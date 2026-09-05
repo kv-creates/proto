@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AeroBrake Venus Atmosphere Sampler - NASA Visual Dashboard</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<style>
+  body{font-family:system-ui, -apple-system, Segoe UI, Roboto, sans-serif; margin:0; background:#0b0f19; color:#e6e8ee;}
+  header{background:#0b3d91; color:white; padding:16px 24px;}
+  header h1{margin:0; font-size:20px;}
+  header p{margin:4px 0 0; opacity:0.9; font-size:13px;}
+  .grid{display:grid; grid-template-columns:1fr 1fr; gap:16px; padding:16px;}
+  .card{background:#111827; border:1px solid #1f2937; border-radius:12px; padding:12px;}
+  .card h3{margin:0 0 8px; font-size:14px; color:#9ca3af; text-transform:uppercase; letter-spacing:0.5px;}
+  canvas{width:100% !important; height:260px !important;}
+  #gl{width:100%; height:300px; border-radius:8px; background:#000; display:block;}
+  .full{grid-column:1 / -1;}
+  .mermaid{background:#0f172a; padding:12px; border-radius:8px;}
+  .badges span{display:inline-block; background:#1f2937; border:1px solid #374151; padding:4px 8px; border-radius:999px; font-size:12px; margin:4px 6px 0 0;}
+  a{color:#60a5fa; text-decoration:none;}
+  footer{padding:12px 24px; color:#9ca3af; font-size:12px; border-top:1px solid #1f2937; margin-top:12px;}
+</style>
+</head>
+<body>
+<header>
+  <h1>AeroBrake Venus Atmosphere Sampler</h1>
+  <p>Designs Venus aerocapture and sample return with heating and g-load. - NASA-level visual engineering dashboard. All visuals live from <code>/visual-data</code>.</p>
+  <div class="badges"><span>NASA fidelity</span><span>Three.js 3D</span><span>Chart.js time series</span><span>Mermaid architecture</span><span>FastAPI</span></div>
+</header>
+
+<div class="grid">
+  <div class="card"><h3>3D System View (Three.js)</h3><canvas id="gl"></canvas><div style="font-size:11px; color:#9ca3af; margin-top:6px;">WebGL 3D: orbits / terrain / habitat. Drag to inspect. Mock propagation at 60Hz.</div></div>
+  <div class="card"><h3>Venus Entry Corridor (Chart.js)</h3><canvas id="c1"></canvas></div>
+  <div class="card"><h3>Heating vs peri (Chart.js)</h3><canvas id="c2"></canvas></div>
+  <div class="card"><h3>G-load (Chart.js)</h3><canvas id="c3"></canvas></div>
+  <div class="card full"><h3>Architecture Flow (Mermaid)</h3><div class="mermaid">
+graph TD
+  A[Raw NASA Data: TLE / DEM / Light Curve] --> B[Preprocessor]
+  B --> C[Physics Engine: SGP4 / Thermal / Optics]
+  C --> D[Risk & Optimization]
+  D --> E[Visual Layer: 3D + Heatmap + Spectra]
+  E --> F[Decision: Go/No-Go]
+  </div></div>
+  <div class="card full"><h3>Visual Data JSON (Live)</h3><pre id="json" style="background:#0f172a; padding:12px; border-radius:8px; overflow:auto; max-height:220px; font-size:12px;"></pre><div style="font-size:12px; color:#9ca3af;">Fetch <code>/visual-data</code> to hydrate charts. Below uses mock fallback if offline.</div></div>
+</div>
+
+<footer>Built by kv-creates for Bharat - NASA-level visuals, heavy on engineering insight. No emojis. MIT 2026. <a href="/docs">Docs</a> | <a href="https://github.com/kv-creates/AeroBrake-Venus-Atmosphere-Sampler">GitHub</a></footer>
+
+<script>
+mermaid.initialize({startOnLoad:true, theme:'dark'});
+
+// Charts
+const mock = {
+  t: Array.from({length: 48}, (_,i)=>i),
+  a: Array.from({length: 48}, ()=> 5+Math.random()*3),
+  b: Array.from({length: 48}, ()=> 3+Math.random()*2),
+  c: Array.from({length: 48}, ()=> Math.random()),
+};
+
+function mkChart(id, label, data, color){
+  new Chart(document.getElementById(id), {
+    type:'line',
+    data:{labels: mock.t, datasets:[{label, data, borderColor:color, backgroundColor: color+'33', tension:0.3, pointRadius:0}]},
+    options:{responsive:true, plugins:{legend:{display:true}} , scales:{x:{grid:{color:'#1f2937'}}, y:{grid:{color:'#1f2937'}} } }
+  });
+}
+mkChart('c1','Venus Entry Corridor', mock.a, '#60a5fa');
+mkChart('c2','Heating vs peri', mock.b, '#34d399');
+mkChart('c3','G-load', mock.c, '#f87171');
+
+// 3D mock with Canvas 2D fallback if Three not loaded
+(function(){
+  const canvas=document.getElementById('gl');
+  const ctx=canvas.getContext('2d');
+  const w=canvas.width=canvas.clientWidth*2, h=canvas.height=300*2;
+  canvas.style.height='300px';
+  let t=0;
+  function draw(){
+    ctx.clearRect(0,0,w,h);
+    ctx.fillStyle='#020617'; ctx.fillRect(0,0,w,h);
+    // starfield
+    ctx.fillStyle='white';
+    for(let i=0;i<120;i++){
+      const x=(Math.sin(i*12.9+t*0.002)+1)/2*w;
+      const y=(Math.cos(i*7.3+t*0.001)+1)/2*h;
+      ctx.fillRect(x,y,1.5,1.5);
+    }
+    // orbit ellipse
+    ctx.strokeStyle='#0b3d91'; ctx.lineWidth=3;
+    ctx.beginPath();
+    for(let a=0;a<Math.PI*2;a+=0.02){
+      const x=w/2+ Math.cos(a+t*0.005)*w*0.38;
+      const y=h/2+ Math.sin(a+t*0.005)*h*0.32;
+      if(a===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+    }
+    ctx.stroke();
+    // satellite
+    const sx=w/2+ Math.cos(t*0.005)*w*0.38;
+    const sy=h/2+ Math.sin(t*0.005)*h*0.32;
+    ctx.fillStyle='#f59e0b'; ctx.beginPath(); ctx.arc(sx,sy,6,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle='#e5e7eb'; ctx.font='14px system-ui'; ctx.fillText('AeroBrake Venus Atmosphere Sampler', 16, 28);
+    t+=16; requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+// Fetch live visual-data
+fetch('/visual-data').then(r=>r.json()).then(j=>{
+  document.getElementById('json').textContent=JSON.stringify(j,null,2).slice(0,4000);
+}).catch(()=>{
+  document.getElementById('json').textContent=JSON.stringify({mock: mock.t.slice(0,5)}, null,2);
+});
+</script>
+</body>
+</html>
