@@ -744,3 +744,4 @@ Update docs on 2026-10-14 #50e5bd
 Fix null check on 2026-10-15 #e0b7dd
 Fix import on 2026-10-15 #1599d2
 Add model on 2026-10-16 #7fe21d
+Fix middleware on 2026-10-17 #7a4fa2
